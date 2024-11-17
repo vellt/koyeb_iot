@@ -7,21 +7,53 @@ const PORT = 8000;
 // CORS engedélyezése
 app.use(cors());
 
-// Lokális változó, amit ellenőrizni kell
-const localVariable = "1234";
+// Lokális változók
+const secureNumbers = [1, 2, 3, 4]; // A helyes kód
+let userNumbers = [0, 0, 0, 0]; // A felhasználó által módosítható tömb
 
-// GET végpont szöveg ellenőrzésére
-app.get('/check-code', (req, res) => {
-  const { text: code } = req.query; // Kérjük a 'text' paramétert a lekérdezésből
-  if (!code) {
-    return res.status(400).json({ error: 'Text parameter is required' });
-  }
+// 1. A teljes `userNumbers` tömb visszaadása
+app.get('/numbers', (req, res) => {
+  return res.json(userNumbers);
+});
 
-  // Ellenőrizd, hogy a beérkező szöveg megegyezik-e a lokális változóval
-  const isMatch = code === localVariable;
+// 2. Az első elem módosítása
+app.get('/numbers/first/:value', (req, res) => {
+  const { value } = req.params;
+  userNumbers[0] = parseInt(value); // Módosítjuk az első elemet
+  return res.json(userNumbers);
+});
 
-  // Válasz visszaadása
-  res.json({ match: isMatch });
+// 3. A második elem módosítása
+app.get('/numbers/second/:value', (req, res) => {
+  const { value } = req.params;
+  userNumbers[1] = parseInt(value); // Módosítjuk a második elemet
+  return res.json(userNumbers);
+});
+
+// 4. A harmadik elem módosítása
+app.get('/numbers/third/:value', (req, res) => {
+  const { value } = req.params;
+  userNumbers[2] = parseInt(value); // Módosítjuk a harmadik elemet
+  return res.json(userNumbers);
+});
+
+// 5. A negyedik elem módosítása
+app.get('/numbers/fourth/:value', (req, res) => {
+  const { value } = req.params;
+  userNumbers[3] = parseInt(value); // Módosítjuk a negyedik elemet
+  return res.json(userNumbers);
+});
+
+// 6. Reset végpont: visszaállítja a userNumbers értékét [0,0,0,0]-ra
+app.get('/numbers/reset', (req, res) => {
+  userNumbers = [0, 0, 0, 0]; // Alapállapot visszaállítása
+  return res.json(userNumbers);
+});
+
+// 7. Check végpont: ellenőrzi, hogy a userNumbers megegyezik-e a secureNumbers tömbbel
+app.get('/numbers/check', (req, res) => {
+  const isMatch = JSON.stringify(userNumbers) === JSON.stringify(secureNumbers); // Egyezés ellenőrzése
+  return res.json(isMatch);
 });
 
 // Szerver indítása
